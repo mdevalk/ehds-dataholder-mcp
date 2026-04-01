@@ -66,6 +66,8 @@ def generate_healthdcat_metadata(
     identifier: str | None = None,
     publisher_identifier: str | None = None,
     publisher_url: str | None = None,
+    publisher_type: str | None = None,
+    publisher_note: str | None = None,
     creator_name: str | None = None,
     creator_identifier: str | None = None,
     # --- Contact ---
@@ -97,6 +99,10 @@ def generate_healthdcat_metadata(
     number_of_individuals: int | None = None,
     number_of_records: int | None = None,
     population_coverage: str | None = None,
+    # --- Health Data Access Body (Release 5) ---
+    hdab_name: str | None = None,
+    hdab_identifier: str | None = None,
+    hdab_url: str | None = None,
     # --- Legal & governance ---
     access_rights: str | None = None,
     license: str | None = None,
@@ -179,6 +185,8 @@ def generate_healthdcat_metadata(
             identifier=identifier,
             publisher_identifier=publisher_identifier,
             publisher_url=publisher_url,
+            publisher_type=publisher_type,
+            publisher_note=publisher_note,
             creator_name=creator_name,
             creator_identifier=creator_identifier,
             contact_point=contact_point,
@@ -200,6 +208,9 @@ def generate_healthdcat_metadata(
             number_of_individuals=number_of_individuals,
             number_of_records=number_of_records,
             population_coverage=population_coverage,
+            hdab_name=hdab_name,
+            hdab_identifier=hdab_identifier,
+            hdab_url=hdab_url,
             access_rights=access_rights,
             license=license,
             legal_basis=legal_basis,
@@ -262,6 +273,8 @@ def get_metadata_template(include_distributions: bool = True) -> str:
         "identifier": "https://data.dihr.nl/datasets/cvd-registry-2010-2022",
         "publisher_identifier": "https://ror.org/example-dihr",
         "publisher_url": "https://www.dihr.nl",
+        "publisher_type": "research institute",
+        "publisher_note": "National institute responsible for health records and statistics in the Netherlands",
         "creator_name": "DIHR Data Science Department",
         "creator_identifier": "https://www.dihr.nl/departments/data-science",
 
@@ -302,6 +315,11 @@ def get_metadata_template(include_distributions: bool = True) -> str:
             "Adults aged 18+ with cardiovascular disease diagnoses in the Netherlands. "
             "Covers approximately 87% of the Dutch adult population."
         ),
+
+        # Health Data Access Body (Release 5 – mandatory under EHDS)
+        "hdab_name": "Dutch Health Data Access Body",
+        "hdab_identifier": "https://www.dihr.nl/hdab",
+        "hdab_url": "https://www.dihr.nl/hdab",
 
         # Legal & governance
         "access_rights": "restricted",

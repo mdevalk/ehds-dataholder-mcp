@@ -34,6 +34,7 @@ from .vocabularies import (
     VCARD_NS,
     ADMS_NS,
     PROV_NS,
+    DPV_NS,
     EU_DATA_THEME,
     EU_ACCESS_RIGHT,
     resolve_health_category,
@@ -56,6 +57,7 @@ HEALTHDCATAP = Namespace(HEALTHDCATAP_NS)
 VCARD = Namespace(VCARD_NS)
 ADMS = Namespace(ADMS_NS)
 PROV = Namespace(PROV_NS)
+DPV = Namespace(DPV_NS)
 
 
 def _build_graph() -> Graph:
@@ -73,6 +75,7 @@ def _build_graph() -> Graph:
     g.bind("vcard", VCARD)
     g.bind("adms", ADMS)
     g.bind("prov", PROV)
+    g.bind("dpv", DPV)
     return g
 
 
@@ -147,7 +150,7 @@ def _add_contact_point(g: Graph, contact: ContactPoint, dataset_uri: URIRef) -> 
 
 
 def _add_publisher(g: Graph, meta: DatasetMetadata, dataset_uri: URIRef) -> None:
-    """Add the publisher as a foaf:Agent."""
+    """Add the publisher as a foaf:Agent (Release 5: includes publisherType and publisherNote)."""
     if meta.publisher_identifier and (
         meta.publisher_identifier.startswith("http://")
         or meta.publisher_identifier.startswith("https://")
@@ -160,6 +163,16 @@ def _add_publisher(g: Graph, meta: DatasetMetadata, dataset_uri: URIRef) -> None
     g.add((pub_uri, FOAF.name, Literal(meta.publisher_name)))
     if meta.publisher_url:
         g.add((pub_uri, FOAF.homepage, _uri(meta.publisher_url)))
+    # Release 5: publisherType (controlled vocabulary, use URI or label)
+    if meta.publisher_type:
+        pt = meta.publisher_type.strip()
+        if pt.startswith("http://") or pt.startswith("https://"):
+            g.add((pub_uri, HEALTHDCATAP.publisherType, _uri(pt)))
+        else:
+            g.add((pub_uri, HEALTHDCATAP.publisherType, Literal(pt)))
+    # Release 5: publisherNote (free-text description of publisher scope/role)
+    if meta.publisher_note:
+        g.add((pub_uri, HEALTHDCATAP.publisherNote, Literal(meta.publisher_note)))
     g.add((dataset_uri, DCTERMS.publisher, pub_uri))
 
 
@@ -479,33 +492,42 @@ def generate(meta: DatasetMetadata) -> str:
         else:
             g.add((dataset_uri, DCTERMS.license, Literal(meta.license)))
 
+    # Release 5: legal basis uses dpv:hasLegalBasis (DPV namespace)
     if meta.legal_basis:
         lb = meta.legal_basis.strip()
         if lb.startswith("http://") or lb.startswith("https://"):
-            g.add((dataset_uri, HEALTHDCATAP.hasLegalBasis, _uri(lb)))
+            g.add((dataset_uri, DPV.hasLegalBasis, _uri(lb)))
         else:
-            g.add((dataset_uri, HEALTHDCATAP.hasLegalBasis, Literal(lb)))
+            g.add((dataset_uri, DPV.hasLegalBasis, Literal(lb)))
 
+    # Release 5: personal data uses dpv:hasPersonalData (DPV namespace)
     if meta.personal_data_handling:
-        g.add((
-            dataset_uri,
-            HEALTHDCATAP.hasPersonalDataHandling,
-            Literal(meta.personal_data_handling),
-        ))
+        g.add((dataset_uri, DPV.hasPersonalData, Literal(meta.personal_data_handling)))
 
+    # Release 5: purpose uses dpv:hasPurpose (DPV namespace)
     if meta.purpose_of_collection:
-        g.add((
-            dataset_uri,
-            HEALTHDCATAP.purposeOfCollection,
-            Literal(meta.purpose_of_collection),
-        ))
+        g.add((dataset_uri, DPV.hasPurpose, Literal(meta.purpose_of_collection)))
 
     if meta.retention_period:
-        g.add((
-            dataset_uri,
-            HEALTHDCATAP.retentionPeriod,
-            Literal(meta.retention_period),
-        ))
+        g.add((dataset_uri, HEALTHDCATAP.retentionPeriod, Literal(meta.retention_period)))
+
+    # Release 5: Health Data Access Body (hdab) – the legally competent body for data access
+    if meta.hdab_name:
+        if meta.hdab_identifier and (
+            meta.hdab_identifier.startswith("http://")
+            or meta.hdab_identifier.startswith("https://")
+        ):
+            hdab_node: URIRef | BNode = _uri(meta.hdab_identifier)
+        else:
+            hdab_node = BNode()
+        g.add((hdab_node, RDF.type, FOAF.Agent))
+        g.add((hdab_node, FOAF.name, Literal(meta.hdab_name)))
+        if meta.hdab_url:
+            g.add((hdab_node, FOAF.homepage, _uri(meta.hdab_url)))
+        g.add((dataset_uri, HEALTHDCATAP.hdab, hdab_node))
+
+    # Release 5: publisher type and note (on the publisher agent node)
+    # These are added in _add_publisher if provided; exposed here via dataset for simplicity
 
     # -------------------------------------------------------------------
     # Standards conformance

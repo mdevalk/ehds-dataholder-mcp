@@ -374,6 +374,100 @@ def test_validate_invalid_syntax():
 
 
 # ---------------------------------------------------------------------------
+# HealthDCAT-AP Release 5 specific features
+# ---------------------------------------------------------------------------
+
+def test_health_theme_uses_wikidata_uri():
+    """Release 5: healthTheme must use Wikidata URIs."""
+    meta = DatasetMetadata(
+        title="Dataset",
+        description="Desc",
+        publisher_name="Pub",
+        health_theme=["cancer", "cardiovascular"],
+    )
+    rdf = generate(meta)
+    assert "wikidata.org/entity/Q12078" in rdf   # cancer
+    assert "wikidata.org/entity/Q179094" in rdf  # cardiovascular
+
+
+def test_health_theme_wikidata_uri_passthrough():
+    """Release 5: raw Wikidata URIs pass through unchanged."""
+    meta = DatasetMetadata(
+        title="Dataset",
+        description="Desc",
+        publisher_name="Pub",
+        health_theme=["http://www.wikidata.org/entity/Q11951"],
+    )
+    rdf = generate(meta)
+    assert "wikidata.org/entity/Q11951" in rdf
+
+
+def test_legal_basis_uses_dpv_namespace():
+    """Release 5: legal basis uses dpv:hasLegalBasis."""
+    meta = DatasetMetadata(
+        title="Dataset",
+        description="Desc",
+        publisher_name="Pub",
+        legal_basis="GDPR Article 9(2)(b)",
+    )
+    rdf = generate(meta)
+    assert "dpv" in rdf
+    assert "hasLegalBasis" in rdf
+
+
+def test_personal_data_uses_dpv_namespace():
+    """Release 5: personal data uses dpv:hasPersonalData."""
+    meta = DatasetMetadata(
+        title="Dataset",
+        description="Desc",
+        publisher_name="Pub",
+        personal_data_handling="Pseudonymised health data",
+    )
+    rdf = generate(meta)
+    assert "hasPersonalData" in rdf
+
+
+def test_purpose_uses_dpv_namespace():
+    """Release 5: purpose uses dpv:hasPurpose."""
+    meta = DatasetMetadata(
+        title="Dataset",
+        description="Desc",
+        publisher_name="Pub",
+        purpose_of_collection="Scientific research",
+    )
+    rdf = generate(meta)
+    assert "hasPurpose" in rdf
+
+
+def test_hdab_added():
+    """Release 5: Health Data Access Body (hdab) is added when provided."""
+    meta = DatasetMetadata(
+        title="Dataset",
+        description="Desc",
+        publisher_name="Pub",
+        hdab_name="Finnish Institute for Health and Welfare",
+        hdab_url="https://thl.fi",
+    )
+    rdf = generate(meta)
+    assert "hdab" in rdf
+    assert "Finnish Institute for Health and Welfare" in rdf
+
+
+def test_publisher_type_and_note():
+    """Release 5: publisherType and publisherNote on the publisher agent."""
+    meta = DatasetMetadata(
+        title="Dataset",
+        description="Desc",
+        publisher_name="National Health Institute",
+        publisher_type="national agency",
+        publisher_note="Responsible for national health data governance",
+    )
+    rdf = generate(meta)
+    assert "publisherType" in rdf
+    assert "publisherNote" in rdf
+
+
+# ---------------------------------------------------------------------------
 # Full example
 # ---------------------------------------------------------------------------
 

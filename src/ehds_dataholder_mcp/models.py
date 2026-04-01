@@ -102,6 +102,21 @@ class DatasetMetadata(BaseModel):
     publisher_url: str | None = Field(
         None, description="Homepage URL of the publisher organisation"
     )
+    publisher_type: str | None = Field(
+        None,
+        description=(
+            "Type of the publishing organisation (healthdcatap:publisherType). "
+            "Controlled vocabulary under development by TEHDAS2. "
+            "Accepts a URI or a label e.g. 'hospital', 'research institute', 'national agency'."
+        ),
+    )
+    publisher_note: str | None = Field(
+        None,
+        description=(
+            "Free-text description of the publisher's activities, scope, and role "
+            "(healthdcatap:publisherNote)."
+        ),
+    )
     creator_name: str | None = Field(
         None,
         description=(
@@ -209,8 +224,10 @@ class DatasetMetadata(BaseModel):
         None,
         description=(
             "Health topic(s) covered by the dataset (healthdcatap:healthTheme). "
-            "E.g. ['cancer', 'cardiovascular', 'diabetes', 'mental health', "
-            "'rare disease', 'COVID-19']"
+            "HealthDCAT-AP Release 5 requires Wikidata URIs. "
+            "Accepts common names (resolved to Wikidata URIs automatically) or full Wikidata URIs. "
+            "E.g. ['cancer', 'cardiovascular', 'diabetes', 'mental health', 'rare disease', "
+            "'COVID-19'] or ['http://www.wikidata.org/entity/Q12078']"
         ),
     )
     coding_systems: list[str] | None = Field(
@@ -274,27 +291,48 @@ class DatasetMetadata(BaseModel):
             "Accepts common names ('CC BY 4.0', 'CC0') or a license URI."
         ),
     )
+    # Release 5: Health Data Access Body – the legally competent body responsible for
+    # granting access to the dataset under EHDS (healthdcatap:hdab)
+    hdab_name: str | None = Field(
+        None,
+        description=(
+            "Name of the Health Data Access Body (HDAB) responsible for granting access "
+            "to this dataset under EHDS (healthdcatap:hdab). "
+            "E.g. 'Finnish Institute for Health and Welfare (THL)'"
+        ),
+    )
+    hdab_identifier: str | None = Field(
+        None,
+        description="URI or identifier for the HDAB organisation",
+    )
+    hdab_url: str | None = Field(
+        None,
+        description="Homepage URL of the HDAB organisation",
+    )
+
     legal_basis: str | None = Field(
         None,
         description=(
-            "Legal basis for processing the data (healthdcatap:hasLegalBasis). "
-            "E.g. 'GDPR Article 9(2)(b)', 'EHDS Article 50', or a URI to the legal act."
+            "Legal basis for processing the data (dpv:hasLegalBasis – DPV namespace). "
+            "E.g. 'GDPR Article 9(2)(b)', 'EHDS Regulation Article 50', "
+            "or a URI to the legal act."
         ),
     )
     personal_data_handling: str | None = Field(
         None,
         description=(
-            "Description of how personal data is handled "
-            "(healthdcatap:hasPersonalDataHandling). "
-            "E.g. 'Pseudonymised', 'Anonymised', 'Aggregated', 'GDPR compliant'"
+            "Personal data categories present in the dataset (dpv:hasPersonalData). "
+            "E.g. 'Pseudonymised health data', 'Anonymised', 'Genetic data', "
+            "'Biometric data'"
         ),
     )
     purpose_of_collection: str | None = Field(
         None,
         description=(
-            "Purpose(s) for which this data was collected or can be used "
-            "(healthdcatap:purposeOfCollection). "
-            "E.g. 'Clinical care', 'Research', 'Public health monitoring', 'Quality assessment'"
+            "Purpose(s) for which the data was collected or can be used "
+            "(dpv:hasPurpose). "
+            "E.g. 'Clinical care', 'Scientific research', "
+            "'Public health monitoring', 'Quality assessment'"
         ),
     )
     retention_period: str | None = Field(

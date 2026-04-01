@@ -18,6 +18,10 @@ ADMS_NS = "http://www.w3.org/ns/adms#"
 SPDX_NS = "http://spdx.org/rdf/terms#"
 SCHEMA_NS = "http://schema.org/"
 PROV_NS = "http://www.w3.org/ns/prov#"
+# Data Privacy Vocabulary (DPV) – used for legal basis, personal data, purpose
+# HealthDCAT-AP Release 5 uses DPV v2.3+ with the EHDS-specific module
+DPV_NS = "http://www.w3.org/ns/dpv#"
+WIKIDATA_NS = "http://www.wikidata.org/entity/"
 
 # EU Named Authority List base URIs
 EU_NAL_BASE = "http://publications.europa.eu/resource/authority/"
@@ -414,60 +418,117 @@ EU_DATA_THEMES: dict[str, str] = {
     "international": f"{EU_DATA_THEME}INTR",
 }
 
-# Health data themes (HealthDCAT-AP specific concepts / SNOMED/ICD groupings)
+# Health data themes – HealthDCAT-AP Release 5 REQUIRES Wikidata URIs for healthTheme.
+# Mappings below use canonical Wikidata entity IDs (http://www.wikidata.org/entity/Q...).
+# Verify individual IDs at https://www.wikidata.org if in doubt.
 HEALTH_THEMES: dict[str, str] = {
-    "cancer": f"{HEALTHDCATAP_NS}Cancer",
-    "oncology": f"{HEALTHDCATAP_NS}Cancer",
-    "cardiovascular": f"{HEALTHDCATAP_NS}CardiovascularDisease",
-    "heart disease": f"{HEALTHDCATAP_NS}CardiovascularDisease",
-    "cardiology": f"{HEALTHDCATAP_NS}CardiovascularDisease",
-    "mental health": f"{HEALTHDCATAP_NS}MentalHealth",
-    "psychiatry": f"{HEALTHDCATAP_NS}MentalHealth",
-    "neurology": f"{HEALTHDCATAP_NS}NeurologicalDisease",
-    "neurological": f"{HEALTHDCATAP_NS}NeurologicalDisease",
-    "diabetes": f"{HEALTHDCATAP_NS}Diabetes",
-    "endocrinology": f"{HEALTHDCATAP_NS}EndocrineDisease",
-    "respiratory": f"{HEALTHDCATAP_NS}RespiratoryDisease",
-    "pulmonology": f"{HEALTHDCATAP_NS}RespiratoryDisease",
-    "infectious disease": f"{HEALTHDCATAP_NS}InfectiousDisease",
-    "infectious": f"{HEALTHDCATAP_NS}InfectiousDisease",
-    "rare disease": f"{HEALTHDCATAP_NS}RareDisease",
-    "rare diseases": f"{HEALTHDCATAP_NS}RareDisease",
-    "paediatrics": f"{HEALTHDCATAP_NS}Paediatrics",
-    "pediatrics": f"{HEALTHDCATAP_NS}Paediatrics",
-    "geriatrics": f"{HEALTHDCATAP_NS}Geriatrics",
-    "elderly": f"{HEALTHDCATAP_NS}Geriatrics",
-    "maternal health": f"{HEALTHDCATAP_NS}MaternalHealth",
-    "obstetrics": f"{HEALTHDCATAP_NS}MaternalHealth",
-    "pharmacy": f"{HEALTHDCATAP_NS}Pharmacy",
-    "medication": f"{HEALTHDCATAP_NS}Pharmacy",
-    "pharmacology": f"{HEALTHDCATAP_NS}Pharmacy",
-    "surgery": f"{HEALTHDCATAP_NS}Surgery",
-    "orthopedics": f"{HEALTHDCATAP_NS}Musculoskeletal",
-    "musculoskeletal": f"{HEALTHDCATAP_NS}Musculoskeletal",
-    "dermatology": f"{HEALTHDCATAP_NS}Dermatology",
-    "skin": f"{HEALTHDCATAP_NS}Dermatology",
-    "ophthalmology": f"{HEALTHDCATAP_NS}Ophthalmology",
-    "eye": f"{HEALTHDCATAP_NS}Ophthalmology",
-    "dental": f"{HEALTHDCATAP_NS}Dental",
-    "dentistry": f"{HEALTHDCATAP_NS}Dental",
-    "genomics": f"{HEALTHDCATAP_NS}GenomicsTheme",
-    "genetics": f"{HEALTHDCATAP_NS}GenomicsTheme",
-    "immunology": f"{HEALTHDCATAP_NS}Immunology",
-    "allergy": f"{HEALTHDCATAP_NS}Immunology",
-    "rheumatology": f"{HEALTHDCATAP_NS}Rheumatology",
-    "gastroenterology": f"{HEALTHDCATAP_NS}Gastroenterology",
-    "nephrology": f"{HEALTHDCATAP_NS}Nephrology",
-    "kidney": f"{HEALTHDCATAP_NS}Nephrology",
-    "urology": f"{HEALTHDCATAP_NS}Urology",
-    "gynaecology": f"{HEALTHDCATAP_NS}Gynaecology",
-    "gynecology": f"{HEALTHDCATAP_NS}Gynaecology",
-    "haematology": f"{HEALTHDCATAP_NS}Haematology",
-    "hematology": f"{HEALTHDCATAP_NS}Haematology",
-    "blood": f"{HEALTHDCATAP_NS}Haematology",
-    "covid": f"{HEALTHDCATAP_NS}COVID19",
-    "covid-19": f"{HEALTHDCATAP_NS}COVID19",
-    "coronavirus": f"{HEALTHDCATAP_NS}COVID19",
+    # Oncology
+    "cancer": f"{WIKIDATA_NS}Q12078",
+    "oncology": f"{WIKIDATA_NS}Q12078",
+    "neoplasm": f"{WIKIDATA_NS}Q12078",
+    # Cardiovascular
+    "cardiovascular": f"{WIKIDATA_NS}Q179094",
+    "cardiovascular disease": f"{WIKIDATA_NS}Q179094",
+    "heart disease": f"{WIKIDATA_NS}Q179094",
+    "cardiology": f"{WIKIDATA_NS}Q179094",
+    # Mental health
+    "mental health": f"{WIKIDATA_NS}Q576",
+    "mental disorder": f"{WIKIDATA_NS}Q576",
+    "psychiatry": f"{WIKIDATA_NS}Q576",
+    # Neurology
+    "neurology": f"{WIKIDATA_NS}Q188874",
+    "neurological": f"{WIKIDATA_NS}Q188874",
+    "neurological disease": f"{WIKIDATA_NS}Q188874",
+    # Diabetes
+    "diabetes": f"{WIKIDATA_NS}Q11951",
+    "diabetes mellitus": f"{WIKIDATA_NS}Q11951",
+    "type 1 diabetes": f"{WIKIDATA_NS}Q1215884",
+    "type 2 diabetes": f"{WIKIDATA_NS}Q3025883",
+    # Respiratory
+    "respiratory": f"{WIKIDATA_NS}Q328848",
+    "respiratory disease": f"{WIKIDATA_NS}Q328848",
+    "pulmonology": f"{WIKIDATA_NS}Q328848",
+    # Infectious disease
+    "infectious disease": f"{WIKIDATA_NS}Q171004",
+    "infectious": f"{WIKIDATA_NS}Q171004",
+    "infection": f"{WIKIDATA_NS}Q171004",
+    # Rare disease
+    "rare disease": f"{WIKIDATA_NS}Q929833",
+    "rare diseases": f"{WIKIDATA_NS}Q929833",
+    "orphan disease": f"{WIKIDATA_NS}Q929833",
+    # COVID-19
+    "covid": f"{WIKIDATA_NS}Q84263196",
+    "covid-19": f"{WIKIDATA_NS}Q84263196",
+    "coronavirus": f"{WIKIDATA_NS}Q84263196",
+    "sars-cov-2": f"{WIKIDATA_NS}Q84263196",
+    # Paediatrics
+    "paediatrics": f"{WIKIDATA_NS}Q7231388",
+    "pediatrics": f"{WIKIDATA_NS}Q7231388",
+    "children": f"{WIKIDATA_NS}Q7231388",
+    # Geriatrics
+    "geriatrics": f"{WIKIDATA_NS}Q83405",
+    "elderly": f"{WIKIDATA_NS}Q83405",
+    "ageing": f"{WIKIDATA_NS}Q83405",
+    # Maternal health / obstetrics
+    "maternal health": f"{WIKIDATA_NS}Q40327",
+    "obstetrics": f"{WIKIDATA_NS}Q40327",
+    "pregnancy": f"{WIKIDATA_NS}Q40327",
+    # Pharmacology / medication
+    "pharmacology": f"{WIKIDATA_NS}Q405",
+    "medication": f"{WIKIDATA_NS}Q405",
+    "drug therapy": f"{WIKIDATA_NS}Q405",
+    # Surgery
+    "surgery": f"{WIKIDATA_NS}Q35842",
+    "surgical": f"{WIKIDATA_NS}Q35842",
+    # Musculoskeletal
+    "musculoskeletal": f"{WIKIDATA_NS}Q15645",
+    "orthopedics": f"{WIKIDATA_NS}Q15645",
+    "orthopaedics": f"{WIKIDATA_NS}Q15645",
+    # Dermatology
+    "dermatology": f"{WIKIDATA_NS}Q171171",
+    "skin": f"{WIKIDATA_NS}Q171171",
+    "skin disease": f"{WIKIDATA_NS}Q171171",
+    # Ophthalmology
+    "ophthalmology": f"{WIKIDATA_NS}Q8844",
+    "eye": f"{WIKIDATA_NS}Q8844",
+    "eye disease": f"{WIKIDATA_NS}Q8844",
+    # Dentistry
+    "dental": f"{WIKIDATA_NS}Q177141",
+    "dentistry": f"{WIKIDATA_NS}Q177141",
+    "oral health": f"{WIKIDATA_NS}Q177141",
+    # Genomics / genetics
+    "genomics": f"{WIKIDATA_NS}Q7946",
+    "genetics": f"{WIKIDATA_NS}Q7946",
+    "genomic data": f"{WIKIDATA_NS}Q7946",
+    # Immunology
+    "immunology": f"{WIKIDATA_NS}Q101929",
+    "allergy": f"{WIKIDATA_NS}Q101929",
+    "immune disorder": f"{WIKIDATA_NS}Q101929",
+    # Rheumatology
+    "rheumatology": f"{WIKIDATA_NS}Q193358",
+    "arthritis": f"{WIKIDATA_NS}Q193358",
+    # Gastroenterology
+    "gastroenterology": f"{WIKIDATA_NS}Q188504",
+    "digestive disease": f"{WIKIDATA_NS}Q188504",
+    # Nephrology
+    "nephrology": f"{WIKIDATA_NS}Q12202",
+    "kidney": f"{WIKIDATA_NS}Q12202",
+    "kidney disease": f"{WIKIDATA_NS}Q12202",
+    # Urology
+    "urology": f"{WIKIDATA_NS}Q192995",
+    # Gynaecology
+    "gynaecology": f"{WIKIDATA_NS}Q170877",
+    "gynecology": f"{WIKIDATA_NS}Q170877",
+    # Haematology
+    "haematology": f"{WIKIDATA_NS}Q7164",
+    "hematology": f"{WIKIDATA_NS}Q7164",
+    "blood disorder": f"{WIKIDATA_NS}Q7164",
+    # Public health / epidemiology
+    "public health": f"{WIKIDATA_NS}Q189603",
+    "epidemiology": f"{WIKIDATA_NS}Q189603",
+    # Environmental health
+    "environmental health": f"{WIKIDATA_NS}Q186588",
+    "environmental": f"{WIKIDATA_NS}Q186588",
 }
 
 
